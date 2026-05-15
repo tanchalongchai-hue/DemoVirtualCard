@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invitation Card</title>
+    <title>Demo Invitation Card</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #fcf9f2;
+            background-color: #1a1a1a; /* เปลี่ยนพื้นหลังเป็นสีเข้มให้เข้ากับความหรูหราของคลิป */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,12 +17,13 @@
             text-align: center;
         }
         .card-container {
-            background: white;
-            padding: 40px 20px;
+            background: #2a2a2a;
+            padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 90%;
             max-width: 400px;
+            color: #fff;
             /* Animation เริ่มต้น */
             opacity: 0;
             transform: translateY(30px);
@@ -32,36 +33,63 @@
             opacity: 1;
             transform: translateY(0);
         }
-        h1 { color: #333; font-weight: 300; letter-spacing: 2px; }
-        p { color: #666; line-height: 1.6; }
+        /* ส่วนสำหรับฝังวิดีโอแนวตั้ง (Shorts) ให้พอดีมือถือ */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 177.77%; /* สัดส่วน 16:9 แนวตั้ง */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        h2 { color: #d4af37; font-weight: 300; letter-spacing: 1px; margin-bottom: 5px; }
+        p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
         .btn {
-            background-color: #c9a063;
-            color: white;
+            background-color: #d4af37; /* สีทอง */
+            color: #1a1a1a;
             border: none;
             padding: 12px 24px;
             border-radius: 25px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
+            width: 100%;
             transition: background-color 0.3s;
         }
-        .btn:hover { background-color: #b08953; }
+        .btn:hover { background-color: #b5952f; }
         .input-field {
             padding: 12px; 
-            width: 80%; 
+            width: 85%; 
             margin-bottom: 15px; 
-            border: 1px solid #ddd; 
+            border: 1px solid #444; 
+            background: #333;
+            color: white;
             border-radius: 8px;
             font-size: 16px;
             text-align: center;
         }
+        .input-field::placeholder { color: #888; }
     </style>
 </head>
 <body>
 
     <div class="card-container" id="invitationCard">
-        <h1>YOU'RE INVITED</h1>
-        <p>ขอเรียนเชิญร่วมงานเลี้ยงฉลอง<br>วันเสาร์ที่ 25 พฤษภาคม 2026</p>
+        
+        <!-- ฝังวิดีโอ YouTube ตรงนี้ (ดึง ID ของวิดีโอมาใส่) -->
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/oPobNHuwZ-I?autoplay=1&loop=1&playlist=oPobNHuwZ-I&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <h2>ขอเรียนเชิญ</h2>
+        <p>เพื่อทดสอบระบบ RSVP แบบมีวิดีโอประกอบ</p>
         
         <input type="text" id="guestName" class="input-field" placeholder="กรุณากรอกชื่อ-นามสกุล">
         <br>
@@ -83,40 +111,27 @@
                 return;
             }
 
-            // นำ URL Web App ของ GAS มาวางตรงนี้
-            const gasUrl = 'https://script.google.com/macros/s/AKfycbxDZhXDWWVhr57hH_0wP25lY-QpyVaG6O_EENDvmnLJNravkllHhcX7RLhI_bQZEft-bg/exec'; 
+            // ถ้าคุณตั้งค่า Google Apps Script ไว้แล้ว เอา URL มาใส่ตรงนี้ได้เลยเพื่อเทสต์ส่งข้อมูล
+            const gasUrl = 'YOUR_GAS_WEBAPP_URL_HERE'; 
 
             const btn = document.querySelector('.btn');
             btn.innerHTML = 'กำลังบันทึก...';
             btn.disabled = true;
 
-            try {
-                // ส่งข้อมูลไปที่ GAS (ไม่ต้องมี userId จาก LINE แล้ว)
-                // เรากำหนด userId เป็น 'Web_User' แทน เพื่อให้โครงสร้างข้อมูลตรงกับ GAS เดิม
-                await fetch(gasUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ name: name, status: status, userId: 'Web_User' })
-                });
-                
-                // เมื่อบันทึกสำเร็จ เปลี่ยน UI ในการ์ดเป็นหน้าขอบคุณแบบ Smooth
+            // จำลองการส่งข้อมูล (ถ้าใส่ gasUrl จริง ให้เอาโค้ด fetch มาเปิดใช้งาน)
+            setTimeout(() => {
                 const card = document.getElementById('invitationCard');
-                card.style.opacity = 0; // เฟดออก
+                card.style.opacity = 0; 
                 
                 setTimeout(() => {
                     card.innerHTML = `
-                        <h2 style="color: #c9a063; margin-bottom: 10px;">ขอบคุณครับ</h2>
-                        <p style="font-size: 18px;">ระบบได้รับข้อมูลการยืนยันเข้าร่วมงานของ<br><b>${name}</b> เรียบร้อยแล้ว</p>
-                        <p style="margin-top: 20px; color: #888;">แล้วพบกันในวันงานนะครับ</p>
+                        <h2 style="color: #d4af37; margin-bottom: 10px; margin-top: 50px;">ขอบคุณครับ</h2>
+                        <p style="font-size: 18px; color: #fff;">ระบบได้รับข้อมูลของ<br><b style="color:#d4af37;">${name}</b> เรียบร้อยแล้ว</p>
+                        <p style="margin-top: 20px; color: #aaa;">นี่คือการทดสอบระบบ Demo สำเร็จ!</p>
                     `;
-                    card.style.opacity = 1; // เฟดหน้าขอบคุณกลับเข้ามา
+                    card.style.opacity = 1; 
                 }, 500);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้งครับ');
-                btn.innerHTML = 'ยืนยันการเข้าร่วม';
-                btn.disabled = false;
-            }
+            }, 1000);
         }
     </script>
 </body>
